@@ -26,7 +26,7 @@ public class Account extends BaseEntity {
     @Column(name = "number")
     private String accountNumber = CODE_BANK + String.format("%06d", number++);
 
-    /** Имя счета */
+    /** Название счета */
     @Column(name = "name")
     private String accountName;
 
