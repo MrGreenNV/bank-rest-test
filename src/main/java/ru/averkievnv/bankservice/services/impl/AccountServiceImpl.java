@@ -35,10 +35,10 @@ public class AccountServiceImpl implements AccountService {
      * Создает новый банковский счет.
      * @param accountCreateDTO Данные для создания счета.
      * @return Информация о созданном счете.
-     * @throws AccountNotCreatedException Выбрасывает при возникновении ошибки на этапе создания счета.
+     * @throws AccountCreatedException Выбрасывает при возникновении ошибки на этапе создания счета.
      */
     @Override
-    public AccountInfoDTO createAccount(AccountCreateDTO accountCreateDTO) throws AccountNotCreatedException {
+    public AccountInfoDTO createAccount(AccountCreateDTO accountCreateDTO) throws AccountCreatedException {
 
         String accountName = accountCreateDTO.getAccountName();
 
@@ -53,7 +53,7 @@ public class AccountServiceImpl implements AccountService {
                 throw new AccountWithNameAlreadyExistsException("Ошибка при создании банковского счета. Название счета: " + accountName + " уже используется");
             }
         } catch (NullPointerException | AccountWithNameAlreadyExistsException ex) {
-            throw new AccountNotCreatedException(ex.getMessage());
+            throw new AccountCreatedException(ex.getMessage());
         }
 
         Account account = modelMapper.map(accountCreateDTO, Account.class);

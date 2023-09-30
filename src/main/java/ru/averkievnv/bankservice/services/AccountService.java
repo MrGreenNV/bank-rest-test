@@ -14,10 +14,10 @@ public interface AccountService {
      * Создает новый банковский счет.
      * @param accountCreateDTO Данные для создания счета.
      * @return Информация о созданном счете.
-     * @throws AccountNotCreatedException Выбрасывает при возникновении ошибки на этапе создания счета.
+     * @throws AccountCreatedException Выбрасывает при возникновении ошибки на этапе создания счета.
      */
     AccountInfoDTO createAccount(AccountCreateDTO accountCreateDTO)
-            throws AccountNotCreatedException;
+            throws AccountCreatedException;
 
     /**
      * Обновляет наименование счета.

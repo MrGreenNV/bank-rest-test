@@ -1,7 +1,7 @@
 package ru.averkievnv.bankservice.exceptions;
 
 /**
- * Класс представляет собой исключение, сообщающее о дублировании при названии счета.
+ * Класс представляет собой исключение, сообщающее о дублировании названия счета.
  * @author mrGreenNV
  */
 public class AccountWithNameAlreadyExistsException extends RuntimeException {
