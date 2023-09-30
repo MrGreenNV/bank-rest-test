@@ -82,14 +82,14 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountAccessException("Введен неверный пин код");
         }
 
-        String newAccountName = accountUpdateNameDTO.getAccountName();
+        String newAccountName = accountUpdateNameDTO.getUpdatedAccountName();
 
         if (newAccountName == null || newAccountName.equals("")) {
             log.error("IN updateAccountName - название счета не обновлено");
             throw new NullPointerException("Название счета не должно быть пустым");
         }
 
-        account.setAccountName(accountUpdateNameDTO.getUpdatedAccountName());
+        account.setAccountName(newAccountName);
         account = accountRepository.save(account);
 
         log.info("IN updateAccountName - название счета: {} успешно обновлено", account.getAccountName());

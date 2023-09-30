@@ -11,9 +11,6 @@ import lombok.Setter;
 @Setter
 public class AccountUpdateNameDTO {
 
-    /** Название счета */
-    private String accountName;
-
     /** Новое название счета */
     private String updatedAccountName;
 
