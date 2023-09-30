@@ -1,9 +1,14 @@
 package ru.averkievnv.bankservice.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Класс, представляющий объект для произведения операций с банковским счетом.
  * @author mrGreenNV
  */
+@Getter
+@Setter
 public class AccountTransactionDTO {
 
     /** Название счета с которого производится операция */
