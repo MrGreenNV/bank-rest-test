@@ -1,5 +1,6 @@
 package ru.averkievnv.bankservice.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -16,18 +17,25 @@ import lombok.Setter;
 public class Account extends BaseEntity {
 
     /** Постоянная часть счета для конкретного отделения банка */
-    private static final String p = "4070281050000";
+    private static final String CODE_BANK = "4070281050000";
+
+    /** Номер счета внутри отделения банка */
+    private static int number = 1;
 
     /** Номер счета */
-    private String accountNumber = p + String.format("%07d", getId());
+    @Column(name = "number")
+    private String accountNumber = CODE_BANK + String.format("%06d", number++);
 
     /** Имя счета */
+    @Column(name = "name")
     private String accountName;
 
     /** Баланс счета */
+    @Column(name = "balance")
     private Double accountBalance = 0.;
 
     /** Пин-код для доступа к счету */
+    @Column(name = "pin_code")
     private String pin;
 
 }
