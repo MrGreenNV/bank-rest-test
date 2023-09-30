@@ -1,0 +1,413 @@
+openapi: 3.0.0
+info:
+  title: Statistics service
+  description: Макет сервиса сбора статистики.
+  contact:
+    name: mrGreenNV
+    email: averkievnv@gmail.com
+    url: https://github.com/MrGreenNV
+  version: 0.1.0
+
+components:
+
+  schemas:
+    ClassifierDTO:
+      description: Данные классификатора (DTO)
+        Содержит в себе тип и описание классификатора.
+      type: object
+      properties:
+        type:
+          type: string
+          description: Тип классификатора
+          example: type_1
+        description:
+          type: string
+          description: Описание классификатора
+          example: Классификатор с данным типом применяется к событиям event_1
+
+    EventCreateDTO:
+      description: Данные для создания события (DTO)
+        Содержит в себе название события и тип классификатора.
+      type: object
+      properties:
+        eventName:
+          type: string
+          description: Название события
+          example: event_1
+        classifierType:
+          type: string
+          description: Тип классификатора.
+          example: type_1
+
+    EventDTO:
+      description: Данные события (DTO)
+        Содержит в себе идентификатор, название, время свершения и тип классификатора.
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор события
+          example: 1
+        eventName:
+          type: string
+          description: Название события
+          example: event_1
+        happenedAt:
+          type: string
+          description: Временная метка, когда произошло событие. Формат = yyyy-MM-dd HH:mm:ss.
+          example: 2023-09-20 12:12:50
+        classifierType:
+          type: string
+          description: Тип классификатора.
+          example: type_1
+
+    ErrorResponse:
+      description: Ответ сервера в случае возникновения ошибки.
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Временная метка, когда произошла ошибка. Формат = yyyy-MM-dd HH:mm:ss.
+          example: 2023-09-20 12:12:50
+        status:
+          type: string
+          description: HTTP статус ошибки.
+          example: 403
+        error:
+          type: string
+          description: Краткое описание ошибки.
+          example: Unauthorized
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке.
+          example: Указан неверный пароль
+        path:
+          type: string
+          description: Путь к ресурсу, который вызвал ошибку.
+        errors:
+          type: object
+          description: Список накопленных ошибок при валидации данных.
+
+
+servers:
+  - url: http://localhost:8181/
+    description: Локальный  сервер для сбора статистики
+
+paths:
+
+  /api/classifiers:
+    post:
+      tags:
+        - ClassifiersController
+      summary: Создание классификатора.
+      description: Принимает от пользователя данные для создания нового классификатора и сохранения в базу данных.
+      requestBody:
+        required: true
+        description: Тип классификатора с описанием.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassifierDTO'
+      responses:
+        '200':
+          description: Классификатор успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassifierDTO'
+        '400':
+          description: Классификатор с данным типом уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - ClassifiersController
+      summary: Возвращает список классификаторов
+      description: Возвращает список всех классификаторов, сохранённых в базе данных
+      responses:
+        '200':
+          description: Список всех классификаторов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassifierDTO'
+
+
+  /api/classifiers/{classifierId}:
+    post:
+      tags:
+        - ClassifiersController
+      summary: Обновление классификатора
+      description: Принимает от пользователя данные для обновления классификатора и сохранения в базу данных.
+      parameters:
+        - in: path
+          name: classifierId
+          schema:
+            type: integer
+          required: true
+          description: Идентификатор классификатора
+      requestBody:
+        required: true
+        description: Классификатор с обновленными данными
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassifierDTO'
+      responses:
+        '200':
+          description: Классификатор успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassifierDTO'
+
+        '400':
+          description: Классификатор с данным типом уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - ClassifiersController
+      summary: Возвращает классификатор.
+      description: Принимает от пользователя идентификатор и возвращает соответствующий ему классификатор.
+      parameters:
+        - in: path
+          name: classifierIds
+          schema:
+            type: integer
+          required: true
+          description: Идентификатор классификатора
+      responses:
+        '200':
+          description: Классификатор успешно получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassifierDTO'
+        '404':
+          description: Ошибка при поиске классификатора
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - ClassifiersController
+      summary: Удаление классификатора
+      description: Принимает от пользователя идентификатор классификатора, который необходимо удалить.
+      parameters:
+        - in: path
+          name: classifierId
+          schema:
+            type: integer
+          required: true
+          description: Идентификатор классификатора
+      responses:
+        '200':
+          description: Классификатор успешно удален
+        '400':
+          description: Классификатор не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/classifiers/{classifierId}/soft:
+    delete:
+      tags:
+        - ClassifiersController
+      summary: Soft удаление классификатора
+      description: Принимает от пользователя идентификатор классификатора, который необходимо удалить.
+        Помечает найденный классификатор на удаление.
+      parameters:
+        - in: path
+          name: classifierId
+          schema:
+            type: integer
+          required: true
+          description: Идентификатор классификатора
+      responses:
+        '200':
+          description: Классификатор успешно помечен на удаление
+        '400':
+          description: Классификатор не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/events:
+    post:
+      tags:
+        - EventsController
+      summary: Создание события.
+      description: Принимает от пользователя данные для создания нового события и сохранения в базу данных.
+      requestBody:
+        required: true
+        description: Название события с типом классификатора.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateDTO'
+      responses:
+        '200':
+          description: Событие успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDTO'
+        '404':
+          description: Классификатор с данным типом не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/events?filter=type_1&page=0&pageSize=10:
+    get:
+      tags:
+        - EventsController
+      summary: Возвращает список событий
+      description: Возвращает список всех событий, сохранённых в базе данных,
+        предусмотрена фильтрация по типу классификатора а также пагинация страниц.
+        События возвращаются сортированным списком по дате возникновения.
+      parameters:
+        - in: path
+          name: filter
+          schema:
+            type: string
+          required: false
+          description: Тип классификатора
+        - in: path
+          name: page
+          schema:
+            type: integer
+          required: false
+          description: Номер выдаваемой страницы.
+        - in: path
+          name: pageSize
+          schema:
+            type: integer
+          required: false
+          description: Количество элементов на странице.
+      responses:
+        '200':
+          description: Список всех событий
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDTO'
+
+  /api/events/{eventId}:
+    post:
+      tags:
+        - EventsController
+      summary: Обновление события
+      description: Принимает от пользователя данные для обновления события и сохранения в базу данных.
+      parameters:
+        - in: path
+          name: eventId
+          schema:
+            type: integer
+          required: true
+          description: Идентификатор события
+      requestBody:
+        required: true
+        description: Событие с обновленными данными
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventDTO'
+      responses:
+        '200':
+          description: Событие успешно обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDTO'
+
+        '400':
+          description: Классификатор с данным типом уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - EventsController
+      summary: Возвращает событие.
+      description: Принимает от пользователя идентификатор и возвращает соответствующее ему событие.
+      parameters:
+        - in: path
+          name: eventId
+          schema:
+            type: integer
+          required: true
+          description: Идентификатор события
+      responses:
+        '200':
+          description: Событие успешно получено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDTO'
+        '404':
+          description: Ошибка при поиске события
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - EventsController
+      summary: Удаление события
+      description: Принимает от пользователя идентификатор события, который необходимо удалить.
+      parameters:
+        - in: path
+          name: eventId
+          schema:
+            type: integer
+          required: true
+          description: Идентификатор события
+      responses:
+        '200':
+          description: Событие успешно удалено
+        '400':
+          description: Событие не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/events/{eventId}/soft:
+    delete:
+      tags:
+        - EventsController
+      summary: Soft удаление события
+      description: Принимает от пользователя идентификатор события, которое необходимо удалить.
+        Помечает найденное событие на удаление.
+      parameters:
+        - in: path
+          name: eventId
+          schema:
+            type: integer
+          required: true
+          description: Идентификатор события
+      responses:
+        '200':
+          description: Событие успешно помечено на удаление
+        '400':
+          description: Событие не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

@@ -1,0 +1,15 @@
+server:
+  port: 8181
+
+spring:
+  profiles:
+    active: dev
+#    active: test
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    url: swagger.yaml
+    try-it-out-enabled: false
+    syntax-highlight:
+      activated: true
