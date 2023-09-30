@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class CustomPinValidation implements ConstraintValidator<CustomPin, String> {
 
     /** Регулярное выражение для проверки электронной почты. */
-    private final static Pattern PIN_PATTERN = Pattern.compile("[0-9]{4}");
+    private final static Pattern PIN_PATTERN = Pattern.compile("^[0-9]{4}$");
 
     /**
      * Инициализирует валидацию.

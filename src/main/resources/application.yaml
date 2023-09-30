@@ -5,6 +5,14 @@ spring:
   profiles:
     active: dev
 #    active: test
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+  h2:
+    console:
+      enabled: true
 
 springdoc:
   swagger-ui:
