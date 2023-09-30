@@ -1,4 +1,4 @@
-package ru.averkievnv.bankservice;
+package ru.averkievnv.bankservice.configs;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

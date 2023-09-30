@@ -36,16 +36,7 @@ public interface AccountService {
      * @return Информацию о счете.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      */
-    AccountDTO getAccount(Long accountId)
-            throws AccountNotFoundException;
-
-    /**
-     * Получает информацию о счете по его названию.
-     * @param accountName Название счета.
-     * @return Информация о счете.
-     * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
-     */
-    AccountDTO getAccount(String accountName)
+    AccountDTO getInfoAccount(Long accountId)
             throws AccountNotFoundException;
 
     /**
@@ -55,19 +46,11 @@ public interface AccountService {
     List<AccountInfoDTO> getAllAccounts();
 
     /**
-     * Удаляет аккаунт по его идентификатору.
+     * Удаляет счет по его идентификатору.
      * @param accountId Идентификатор счета.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      */
     void deleteAccount(Long accountId)
-            throws AccountNotFoundException;
-
-    /**
-     * Удаляет аккаунт по его названию.
-     * @param accountName Название счета.
-     * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
-     */
-    void deleteAccount(String accountName)
             throws AccountNotFoundException;
 
     /**
@@ -79,42 +62,37 @@ public interface AccountService {
             throws AccountNotFoundException;
 
     /**
-     * Деактивирует счет по его названию.
-     * @param accountName Название счета.
-     * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
-     */
-    void softDeleteAccount(String accountName)
-            throws AccountNotFoundException;
-
-    /**
      * Выполняет пополнение счета.
+     * @param accountId Идентификатор пополняемого счета.
      * @param accountTransactionDTO Данные для совершения пополнения счета.
      * @return Информация о счете.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      */
-    AccountInfoDTO deposit(AccountTransactionDTO accountTransactionDTO)
+    AccountInfoDTO deposit(Long accountId, AccountTransactionDTO accountTransactionDTO)
             throws AccountNotFoundException;
 
     /**
-     * Выполняет снятие средств со счета.
-     * @param accountTransactionDTO Данные для снятия средств со счета.
+     * Выполняет списание средств со счета.
+     * @param accountId Идентификатор счета, с которого происходит списание средств.
+     * @param accountTransactionDTO Данные для списания средств со счета.
      * @return Информация о счете.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      * @throws AccountAccessException Выбрасывает при возникновении ошибки на этапе доступа к счету.
-     * @throws AccountWithdrawException Выбрасывает при возникновении ошибки на этапе снятия средств со счета.
+     * @throws AccountWithdrawException Выбрасывает при возникновении ошибки на этапе списание средств со счета.
      */
-    AccountInfoDTO withdraw(AccountTransactionDTO accountTransactionDTO)
+    AccountInfoDTO withdraw(Long accountId, AccountTransactionDTO accountTransactionDTO)
             throws AccountNotFoundException, AccountAccessException, AccountWithdrawException;
 
     /**
      * Выполняет перевод средств между счетами.
+     * @param accountId Идентификатор счета, с которого происходит списание средств.
      * @param accountTransactionDTO Данные для перевода средств.
      * @return Информация о счете.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      * @throws AccountAccessException Выбрасывает при возникновении ошибки на этапе доступа к счету.
      * @throws AccountWithdrawException Выбрасывает при возникновении ошибки на этапе снятия средств со счета.
      */
-    AccountInfoDTO transfer(AccountTransactionDTO accountTransactionDTO)
+    AccountInfoDTO transfer(Long accountId, AccountTransactionDTO accountTransactionDTO)
             throws AccountNotFoundException, AccountAccessException, AccountWithdrawException;
 
 }

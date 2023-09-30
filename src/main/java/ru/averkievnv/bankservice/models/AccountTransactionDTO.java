@@ -11,9 +11,6 @@ import lombok.Setter;
 @Setter
 public class AccountTransactionDTO {
 
-    /** Название счета с которого производится операция */
-    private String currentAccountName;
-
     /** Название счета на который совершается перевод */
     private String sourceAccountName;
 
