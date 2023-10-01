@@ -3,6 +3,7 @@ package ru.averkievnv.bankservice.services.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.averkievnv.bankservice.exceptions.*;
@@ -124,6 +125,17 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountInfoDTO> getAllAccounts() {
         return accountRepository.findAll().stream()
+                .map(account -> modelMapper.map(account, AccountInfoDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Получает информацию о всех счетах с пагинацией.
+     * @param pageRequest Пагинация страниц
+     * @return Список объектов, содержащих информацию о всех счетах.
+     */
+    public List<AccountInfoDTO> getAllAccounts(PageRequest pageRequest) {
+        return accountRepository.findAll(pageRequest).stream()
                 .map(account -> modelMapper.map(account, AccountInfoDTO.class))
                 .collect(Collectors.toList());
     }
