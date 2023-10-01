@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
 
         ErrorResponse response = new ErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.UNPROCESSABLE_ENTITY,
                 "Ошибки при валидации данных",
                 request.getRequestURI(),
                 errorMessages

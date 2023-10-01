@@ -4,13 +4,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * @author mrGreenNV
  */
 @Configuration
-@EnableWebMvc
 public class SpringConfig {
 
     /**
