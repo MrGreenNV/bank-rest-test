@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  bank-service:
+    container_name: bank-service
+    image: bank-service:0.0.1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8181:8181"
+
+    environment:
+      - SERVER_PORT=8181
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:bank_service_db
