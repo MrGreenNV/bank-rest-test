@@ -35,10 +35,11 @@ public class AccountServiceImpl implements AccountService {
      * Создает новый банковский счет.
      * @param accountCreateDTO Данные для создания счета.
      * @return Информация о созданном счете.
-     * @throws AccountNotCreatedException Выбрасывает при возникновении ошибки на этапе создания счета.
+     * @throws AccountCreatedException Выбрасывает при возникновении ошибки на этапе создания счета.
      */
     @Override
-    public AccountInfoDTO createAccount(AccountCreateDTO accountCreateDTO) throws AccountNotCreatedException {
+    public AccountInfoDTO createAccount(AccountCreateDTO accountCreateDTO)
+            throws AccountCreatedException {
 
         String accountName = accountCreateDTO.getAccountName();
 
@@ -53,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
                 throw new AccountWithNameAlreadyExistsException("Ошибка при создании банковского счета. Название счета: " + accountName + " уже используется");
             }
         } catch (NullPointerException | AccountWithNameAlreadyExistsException ex) {
-            throw new AccountNotCreatedException(ex.getMessage());
+            throw new AccountCreatedException(ex.getMessage());
         }
 
         Account account = modelMapper.map(accountCreateDTO, Account.class);
@@ -69,11 +70,13 @@ public class AccountServiceImpl implements AccountService {
      * @param accountId Идентификатор обновляемого счета.
      * @param accountUpdateNameDTO Данные для обновления счета.
      * @return Информация об обновленном счете.
+     * @throws AccountAccessException Выбрасывает при возникновении ошибки на этапе доступа к счету.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      * @throws AccountWithNameAlreadyExistsException Выбрасывает при возникновении ошибки дублирования названия счета.
      */
     @Override
-    public AccountInfoDTO updateAccountName(Long accountId, AccountUpdateNameDTO accountUpdateNameDTO) throws AccountNotFoundException, AccountWithNameAlreadyExistsException {
+    public AccountInfoDTO updateAccountName(Long accountId, AccountUpdateNameDTO accountUpdateNameDTO)
+            throws AccountAccessException, AccountNotFoundException, AccountWithNameAlreadyExistsException {
 
         Account account = getAccount(accountId);
 
@@ -87,6 +90,11 @@ public class AccountServiceImpl implements AccountService {
         if (newAccountName == null || newAccountName.equals("")) {
             log.error("IN updateAccountName - название счета не обновлено");
             throw new NullPointerException("Название счета не должно быть пустым");
+        }
+
+        if (existAccountByName(newAccountName)) {
+            log.error("IN updateAccountName - название счета: {} не обновлено", account.getAccountName());
+            throw new AccountWithNameAlreadyExistsException("Ошибка при обновлении банковского счета. Название счета: " + newAccountName + " уже используется");
         }
 
         account.setAccountName(newAccountName);
@@ -103,7 +111,8 @@ public class AccountServiceImpl implements AccountService {
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      */
     @Override
-    public AccountDTO getInfoAccount(Long accountId) throws AccountNotFoundException {
+    public AccountDTO getInfoAccount(Long accountId)
+            throws AccountNotFoundException {
         Account account = getAccount(accountId);
         return modelMapper.map(account, AccountDTO.class);
     }
@@ -125,7 +134,8 @@ public class AccountServiceImpl implements AccountService {
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      */
     @Override
-    public void deleteAccount(Long accountId) throws AccountNotFoundException {
+    public void deleteAccount(Long accountId)
+            throws AccountNotFoundException {
         if (notExistAccountById(accountId)) {
             log.error("IN deleteAccount - счет с идентификатором: {} не удален", accountId);
             throw new AccountNotFoundException("Счет с идентификатором: " + accountId + " не найден");
@@ -141,7 +151,8 @@ public class AccountServiceImpl implements AccountService {
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      */
     @Override
-    public void softDeleteAccount(Long accountId) throws AccountNotFoundException {
+    public void softDeleteAccount(Long accountId)
+            throws AccountNotFoundException {
         if (notExistAccountById(accountId)) {
             log.error("IN softDeleteAccount - счет с идентификатором: {} не деактивирован", accountId);
             throw new AccountNotFoundException("Счет с идентификатором: " + accountId + " не найден");
@@ -160,9 +171,11 @@ public class AccountServiceImpl implements AccountService {
      * @param accountTransactionDTO Данные для совершения пополнения счета.
      * @return Информация о счете.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
+     * @throws AccountWithdrawException Выбрасывает при возникновении ошибки на этапе списание средств со счета.
      */
     @Override
-    public AccountInfoDTO deposit(Long accountId, AccountTransactionDTO accountTransactionDTO) throws AccountNotFoundException {
+    public AccountInfoDTO deposit(Long accountId, AccountTransactionDTO accountTransactionDTO)
+            throws AccountWithdrawException, AccountNotFoundException {
 
         Account account = getAccount(accountId);
         Double amount = accountTransactionDTO.getTransferAmount();
@@ -189,7 +202,8 @@ public class AccountServiceImpl implements AccountService {
      * @throws AccountWithdrawException Выбрасывает при возникновении ошибки на этапе списание средств со счета.
      */
     @Override
-    public AccountInfoDTO withdraw(Long accountId, AccountTransactionDTO accountTransactionDTO) throws AccountNotFoundException, AccountAccessException, AccountWithdrawException {
+    public AccountInfoDTO withdraw(Long accountId, AccountTransactionDTO accountTransactionDTO)
+            throws AccountNotFoundException, AccountAccessException, AccountWithdrawException {
 
         Account account = getAccount(accountId);
 
@@ -230,7 +244,8 @@ public class AccountServiceImpl implements AccountService {
      * @throws AccountWithdrawException Выбрасывает при возникновении ошибки на этапе снятия средств со счета.
      */
     @Override
-    public AccountInfoDTO transfer(Long accountId, AccountTransactionDTO accountTransactionDTO) throws AccountNotFoundException, AccountAccessException, AccountWithdrawException {
+    public AccountInfoDTO transfer(Long accountId, AccountTransactionDTO accountTransactionDTO)
+            throws AccountNotFoundException, AccountAccessException, AccountWithdrawException {
 
         Account account = getAccount(accountId);
 
@@ -272,7 +287,8 @@ public class AccountServiceImpl implements AccountService {
      * @param accountId Идентификатор счета.
      * @return Информация о счете.
      */
-    private Account getAccount(Long accountId) throws AccountNotFoundException {
+    private Account getAccount(Long accountId)
+            throws AccountNotFoundException {
         Optional<Account> account = accountRepository.findById(accountId);
 
         if (account.isEmpty()) {
@@ -289,12 +305,13 @@ public class AccountServiceImpl implements AccountService {
      * @param accountName Название счета.
      * @return Информация о счете.
      */
-    private Account getAccountByName(String accountName) throws AccountNotFoundException {
+    private Account getAccountByName(String accountName)
+            throws AccountNotFoundException {
         Optional<Account> account = accountRepository.findAccountByAccountName(accountName);
 
         if (account.isEmpty()) {
             log.error("IN getAccountByName - счет с названием: {} не найден", accountName);
-            throw new AccountNotFoundException("Счет с идентификатором: " + accountName + " не найден");
+            throw new AccountNotFoundException("Счет с названием: " + accountName + " не найден");
         }
 
         log.info("IN getAccountByName - счет с названием: {} успешно найден", accountName);
