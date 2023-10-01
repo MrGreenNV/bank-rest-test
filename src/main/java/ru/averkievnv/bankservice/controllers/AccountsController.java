@@ -2,6 +2,7 @@ package ru.averkievnv.bankservice.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,8 +61,14 @@ public class AccountsController {
      * @return Список счетов содержащий информацию о названии и балансе.
      */
     @GetMapping()
-    public ResponseEntity<List<AccountInfoDTO>> showAllAccounts() {
-        return ResponseEntity.status(HttpStatus.OK).body(accountService.getAllAccounts());
+    public ResponseEntity<List<AccountInfoDTO>> showAllAccounts(
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize
+    ) {
+        if (page == null || pageSize == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(accountService.getAllAccounts());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(accountService.getAllAccounts(PageRequest.of(page, pageSize)));
     }
 
     /**
