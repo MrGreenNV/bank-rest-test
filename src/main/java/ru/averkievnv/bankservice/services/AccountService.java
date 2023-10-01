@@ -24,11 +24,12 @@ public interface AccountService {
      * @param accountId Идентификатор обновляемого счета.
      * @param accountUpdateNameDTO Данные для обновления счета.
      * @return Информация об обновленном счете.
+     * @throws AccountAccessException Выбрасывает при возникновении ошибки на этапе доступа к счету.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
      * @throws AccountWithNameAlreadyExistsException Выбрасывает при возникновении ошибки дублирования названия счета.
      */
     AccountInfoDTO updateAccountName(Long accountId, AccountUpdateNameDTO accountUpdateNameDTO)
-            throws AccountNotFoundException, AccountWithNameAlreadyExistsException;
+            throws AccountAccessException, AccountNotFoundException, AccountWithNameAlreadyExistsException;
 
     /**
      * Получает информацию о счете по его идентификатору.
@@ -67,9 +68,10 @@ public interface AccountService {
      * @param accountTransactionDTO Данные для совершения пополнения счета.
      * @return Информация о счете.
      * @throws AccountNotFoundException Выбрасывает при возникновении ошибки на этапе поиска счета.
+     * @throws AccountWithdrawException Выбрасывает при возникновении ошибки на этапе списание средств со счета.
      */
     AccountInfoDTO deposit(Long accountId, AccountTransactionDTO accountTransactionDTO)
-            throws AccountNotFoundException;
+            throws AccountWithdrawException, AccountNotFoundException;
 
     /**
      * Выполняет списание средств со счета.
