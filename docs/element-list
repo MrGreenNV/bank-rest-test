@@ -1,0 +1,10 @@
+ru.averkiev.bankservice
+ru.averkiev.bankservice.configs
+ru.averkiev.bankservice.controllers
+ru.averkiev.bankservice.exceptions
+ru.averkiev.bankservice.models
+ru.averkiev.bankservice.repositories
+ru.averkiev.bankservice.services
+ru.averkiev.bankservice.services.impl
+ru.averkiev.bankservice.utils
+ru.averkiev.bankservice.validations
